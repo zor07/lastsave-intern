@@ -26,5 +26,5 @@ jobs:
             '{github_username: $github_username, pr_url: $pr_url, diff: $diff}')
           curl -s -X POST "${{ secrets.APP_BASE_URL }}/api/pr-review" \
             -H "Content-Type: application/json" \
-            -H "X-Secret-Token: ${{ secrets.REVIEW_SECRET_TOKEN }}" \
+            -H "X-Secret-Token: ${{ secrets.CI_PR_WEBHOOK_TOKEN }}" \
             -d "$PAYLOAD"
