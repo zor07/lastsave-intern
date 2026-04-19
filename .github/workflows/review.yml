@@ -8,6 +8,22 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout PR code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Run tests
+        id: tests
+        run: mvn test -B
+        continue-on-error: true
+
       - name: Get PR diff
         run: |
           curl -s \
@@ -16,15 +32,32 @@ jobs:
             https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} \
             > pr.diff
 
-      - name: Send to review service
+      - name: Send PR report
         run: |
+          if [ "${{ steps.tests.outcome }}" == "success" ]; then
+            PASSED=true
+            FAILED_TESTS="[]"
+          else
+            PASSED=false
+            FAILED_TESTS=$(
+              find target/surefire-reports -name "TEST-*.xml" 2>/dev/null | xargs -I{} python3 -c "
+          import xml.etree.ElementTree as ET, sys
+          tree = ET.parse('{}')
+          for tc in tree.getroot().iter('testcase'):
+              if tc.find('failure') is not None or tc.find('error') is not None:
+                  print(tc.get('classname') + '.' + tc.get('name'))
+          " 2>/dev/null | jq -R . | jq -s .
+            )
+          fi
           DIFF=$(cat pr.diff)
           PAYLOAD=$(jq -n \
             --arg github_username "${{ github.event.pull_request.user.login }}" \
             --arg pr_url "${{ github.event.pull_request.html_url }}" \
+            --argjson passed "$PASSED" \
+            --argjson failed_tests "$FAILED_TESTS" \
             --arg diff "$DIFF" \
-            '{github_username: $github_username, pr_url: $pr_url, diff: $diff}')
-          curl -s -X POST "${{ secrets.APP_BASE_URL }}/api/pr-review" \
+            '{github_username: $github_username, pr_url: $pr_url, passed: $passed, failed_tests: $failed_tests, diff: $diff}')
+          curl -s -X POST "${{ secrets.APP_BASE_URL }}/api/pr/report" \
             -H "Content-Type: application/json" \
             -H "X-Secret-Token: ${{ secrets.CI_PR_WEBHOOK_TOKEN }}" \
             -d "$PAYLOAD"
