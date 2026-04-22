@@ -52,8 +52,12 @@ jobs:
           import xml.etree.ElementTree as ET
           tree = ET.parse('{}')
           for tc in tree.getroot().iter('testcase'):
-              if tc.find('failure') is not None or tc.find('error') is not None:
-                  print(tc.get('classname') + '.' + tc.get('name'))
+              failure = tc.find('failure')
+              error = tc.find('error')
+              node = failure if failure is not None else error
+              if node is not None:
+                  msg = (node.get('message') or '').split(' ==>')[0].strip()
+                  print(msg if msg else tc.get('classname') + '.' + tc.get('name'))
           " 2>/dev/null | jq -R . | jq -s .
             )
           fi
