@@ -1,4 +1,4 @@
-package com.lastsave.block05.topic02;
+package com.lastsave.block05.topic02.task03;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

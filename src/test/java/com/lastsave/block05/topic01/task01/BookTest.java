@@ -1,4 +1,4 @@
-package com.lastsave.block05.topic01;
+package com.lastsave.block05.topic01.task01;
 
 import org.junit.jupiter.api.Test;
 
