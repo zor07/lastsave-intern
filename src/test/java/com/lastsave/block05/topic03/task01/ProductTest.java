@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,6 +44,17 @@ class ProductTest {
         setPrice.invoke(product, 2000.0);
         assertEquals(2000.0, getPrice.invoke(product),
                 "Метод setPrice реализован некорректно. После setPrice(2000.0) ==> ожидалось getPrice() = 2000.0");
+    }
+
+    @Test
+    void noExtraSetters() throws Exception {
+        Class<?> clazz = Class.forName(CLASS_NAME);
+        List<String> setters = Arrays.stream(clazz.getDeclaredMethods())
+                .map(Method::getName)
+                .filter(name -> name.startsWith("set"))
+                .collect(Collectors.toList());
+        assertEquals(List.of("setPrice"), setters,
+                "В классе Product должен быть только один сеттер — setPrice. Лишние сеттеры: " + setters);
     }
 
     @Test
