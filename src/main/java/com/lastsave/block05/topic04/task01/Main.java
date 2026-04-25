@@ -3,12 +3,8 @@ package com.lastsave.block05.topic04.task01;
 public class Main {
 
     public static void main(String[] args) {
-        // Создай пакет persons внутри этого пакета и разместить в нём классы Person, PersonParser, PersonValidator
-        // Затем раскомментируй и проверь:
-
-        // import com.lastsave.block05.topic04.task01.persons.Person;
-        // import com.lastsave.block05.topic04.task01.persons.PersonParser;
-        // import com.lastsave.block05.topic04.task01.persons.PersonValidator;
+        // Создай пакет persons внутри этого пакета и разместри в нём классы Person, PersonParser, PersonValidator
+        // Добавь импорты для этих классов в начало файла, затем раскомментируй и проверь:
 
         // System.out.println(PersonValidator.validate("Алекс, Москва")); // true
         // System.out.println(PersonValidator.validate("Алекс"));          // false
