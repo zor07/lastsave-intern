@@ -37,7 +37,7 @@ jobs:
             echo "No changed production classes found, skipping tests"
             exit 0
           fi
-          TEST_NAMES=$(echo "$CHANGED_PACKAGES" | sed 's/$/*Test/' | tr '\n' ',' | sed 's/,$//')
+          TEST_NAMES=$(echo "$CHANGED_PACKAGES" | sed 's$/\.*Test/' | tr '\n' ',' | sed 's/,$//')
           echo "Running tests: $TEST_NAMES"
           mvn test -Dtest="$TEST_NAMES" -Dsurefire.failIfNoSpecifiedTests=false -B
         continue-on-error: true
