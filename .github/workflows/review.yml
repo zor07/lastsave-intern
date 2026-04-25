@@ -30,12 +30,14 @@ jobs:
       - name: Run tests
         id: tests
         run: |
-          CHANGED_CLASSES=$(grep "^+++ b/" pr.diff | grep "src/main/.*\.java$" | sed 's|.*/||; s|\.java$||')
-          if [ -z "$CHANGED_CLASSES" ]; then
+          CHANGED_PACKAGES=$(grep "^+++ b/" pr.diff | grep "src/main/.*\.java$" \
+            | sed 's|.*src/main/java/||; s|/[^/]*\.java$||; s|/|.|g' \
+            | sort -u)
+          if [ -z "$CHANGED_PACKAGES" ]; then
             echo "No changed production classes found, skipping tests"
             exit 0
           fi
-          TEST_NAMES=$(echo "$CHANGED_CLASSES" | sed 's/$/*Test/' | tr '\n' ',' | sed 's/,$//')
+          TEST_NAMES=$(echo "$CHANGED_PACKAGES" | sed 's/$/*Test/' | tr '\n' ',' | sed 's/,$//')
           echo "Running tests: $TEST_NAMES"
           mvn test -Dtest="$TEST_NAMES" -Dsurefire.failIfNoSpecifiedTests=false -B
         continue-on-error: true
