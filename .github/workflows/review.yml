@@ -27,24 +27,34 @@ jobs:
             https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} \
             > pr.diff
 
+      - name: Get test tag
+        id: tag
+        run: |
+          TAG=$(curl -s \
+            "${{ secrets.APP_BASE_URL }}/api/pr/test-tag?githubUsername=${{ github.event.pull_request.user.login }}" \
+            -H "X-Secret-Token: ${{ secrets.CI_PR_WEBHOOK_TOKEN }}")
+          if [ -z "$TAG" ]; then
+            echo "Could not get test tag, skipping tests"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "tag=$TAG" >> $GITHUB_OUTPUT
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Run tests
         id: tests
+        if: steps.tag.outputs.skip == 'false'
         run: |
-          CHANGED_PACKAGES=$(grep "^+++ b/" pr.diff | grep "src/main/.*\.java$" \
-            | sed 's|.*src/main/java/||; s|/[^/]*\.java$||; s|/|.|g' \
-            | sort -u)
-          if [ -z "$CHANGED_PACKAGES" ]; then
-            echo "No changed production classes found, skipping tests"
-            exit 0
-          fi
-          TEST_NAMES=$(echo "$CHANGED_PACKAGES" | sed 's$/\.*Test/' | tr '\n' ',' | sed 's/,$//')
-          echo "Running tests: $TEST_NAMES"
-          mvn test -Dtest="$TEST_NAMES" -Dsurefire.failIfNoSpecifiedTests=false -B
+          echo "Running tests for tag: ${{ steps.tag.outputs.tag }}"
+          mvn test -Dgroups="${{ steps.tag.outputs.tag }}" -Dsurefire.failIfNoSpecifiedTests=false -B
         continue-on-error: true
 
       - name: Send PR report
         run: |
-          if [ "${{ steps.tests.outcome }}" == "success" ]; then
+          if [ "${{ steps.tag.outputs.skip }}" == "true" ]; then
+            PASSED=true
+            FAILED_TESTS="[]"
+          elif [ "${{ steps.tests.outcome }}" == "success" ]; then
             PASSED=true
             FAILED_TESTS="[]"
           else

@@ -1,6 +1,7 @@
 package com.lastsave.block05.topic02.task03;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
@@ -8,6 +9,7 @@ import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("block5.topic2")
 class PersonCountTest {
 
     private static final String CLASS_NAME = "com.lastsave.block05.topic02.task03.Person";

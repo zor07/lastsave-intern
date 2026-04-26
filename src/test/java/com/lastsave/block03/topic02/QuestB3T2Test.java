@@ -1,10 +1,12 @@
 package com.lastsave.block03.topic02;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("block3.topic2")
 class QuestB3T2Test {
 
     private QuestB3T2 quest;

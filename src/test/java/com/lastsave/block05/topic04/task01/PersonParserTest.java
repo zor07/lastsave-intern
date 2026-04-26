@@ -1,5 +1,6 @@
 package com.lastsave.block05.topic04.task01;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
@@ -7,6 +8,7 @@ import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("block5.topic4")
 class PersonParserTest {
 
     private static final String PERSON_CLASS = "com.lastsave.block05.topic04.task01.persons.Person";
