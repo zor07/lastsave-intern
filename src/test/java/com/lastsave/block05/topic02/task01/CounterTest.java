@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Tag("block5.topic2")
+@Tag("block05.topic02")
 class CounterTest {
 
     private static final String CLASS_NAME = "com.lastsave.block05.topic02.task01.Counter";

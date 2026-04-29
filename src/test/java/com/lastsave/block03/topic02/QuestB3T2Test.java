@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Tag("block3.topic2")
+@Tag("block03.topic02")
 class QuestB3T2Test {
 
     private QuestB3T2 quest;

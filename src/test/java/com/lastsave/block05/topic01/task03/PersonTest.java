@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Tag("block5.topic1")
+@Tag("block05.topic01")
 class PersonTest {
 
     private static final String CLASS_NAME = "com.lastsave.block05.topic01.task03.Person";

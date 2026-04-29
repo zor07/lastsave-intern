@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Tag("block5.topic3")
+@Tag("block05.topic03")
 class StudentTest {
 
     private static final String CLASS_NAME = "com.lastsave.block05.topic03.task02.Student";
